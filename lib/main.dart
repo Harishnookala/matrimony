@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matrimony/repositories/authentication.dart';
 import 'Screens/Home.dart';
 import 'dart:async';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/Login/login.dart';
 import 'auth_bloc/auth_bloc.dart';
 import 'auth_bloc/auth_state.dart';
@@ -15,6 +15,7 @@ import 'bloc/Login_bloc/login_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   SharedPreferences preferences = await SharedPreferences.getInstance();
 
   await Firebase.initializeApp();
 
@@ -62,38 +63,4 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
-/*
-class MainScreen extends StatelessWidget {
-  AuthBloc? authBloc;
-  @override
-  Widget build(BuildContext context) {
-    print("auth state");
 
-    authBloc = BlocProvider.of<AuthBloc>(context);
-    return Container(
-      child: Column(
-        children: [
-          BlocListener<AuthBloc,AuthState>(
-            listener: (context,state){
-              if(state is AuthenticateState){
-                print(state);
-              }
-            },
-            child:BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  if (state is UnAuthenticateState) {
-                    return Login();
-                  } else if (state is AuthenticateState) {
-                    print(state);
-                    return Home();
-                  }
-
-                  return Login();
-                }) ,
-          )
-        ],
-      ),
-    );
-  }
-}
-*/

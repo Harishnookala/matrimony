@@ -71,6 +71,7 @@ class SigninState extends State<Login> {
                                       BlocListener<Login_bloc, LoginState>(
                                         listener: (context, state) {
                                           if (state is LoginSucced) {
+                                            print(state.user);
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) => Home(
@@ -80,16 +81,16 @@ class SigninState extends State<Login> {
                                         },
                                         child:
                                             BlocBuilder<Login_bloc, LoginState>(
-                                          builder: (context, state) {
-                                            if (state is LoginFailed) {
-                                              login_error = state.message;
-                                            } else if (state is LoginSucced) {
-                                              return Container();
-                                            }
-                                            return Container();
-                                          },
-                                        ),
-                                      ),
+                                             builder: (context, state) {
+                                               if (state is LoginFailed) {
+                                                  login_error = state.message;
+                                               } else if (state is LoginSucced){
+                                                    return Container();
+                                               }
+                                                return Container();
+                                            },
+                                          ),
+                                       ),
                                       Form(
                                         key: form_key,
                                         child: Column(
@@ -106,7 +107,6 @@ class SigninState extends State<Login> {
                                               height: 20,
                                             ),
                                             submitButton(),
-
                                           ],
                                         ),
                                       ),
@@ -115,7 +115,7 @@ class SigninState extends State<Login> {
                                       ),
                                       signinwithgoogle(),
                                       siginwithphone(),
-                                      Signup()
+                                      Signup(),
                                     ]),
                                   ),
                                 ],
@@ -238,12 +238,6 @@ class SigninState extends State<Login> {
                 loginBloc.add(SignInButtonPressed(
                     email: email_controller.text,
                     password: password_controller.text));
-
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Login()),
-                  (Route<dynamic> route) => false,
-                );
               });
             }
           },

@@ -129,7 +129,7 @@ class Authentication{
           print("Error");
         }
 
-        //This callback would gets called when verification is done auto maticlly
+        //This callback would gets called when verification is done automatically
       },
       verificationFailed: (exception){
         print(exception);
@@ -157,9 +157,8 @@ class Authentication{
                     onPressed: () async {
                       final code = _codeController.text.trim();
                       AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
-
                       var result = await _auth.signInWithCredential(credential);
-
+                      //print(result);
                       User? user = result.user;
                       print(user);
                       if(user != null){

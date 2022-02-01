@@ -1,19 +1,16 @@
-import 'dart:ffi';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:matrimony/Screens/Home.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddProfile extends StatefulWidget {
-  User? current_user;
-  AddProfile({Key? key, this.current_user}) : super(key: key);
+  final User? current_user;
+  final String? uid;
+  AddProfile({Key? key, this.current_user,this.uid }) : super(key: key);
 
   @override
   _AddProfileState createState() =>
@@ -21,10 +18,10 @@ class AddProfile extends StatefulWidget {
 }
 
 class _AddProfileState extends State<AddProfile> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController? nameController;
   TextEditingController? imageController;
   TextEditingController eduController = TextEditingController();
-
+  bool?success =false;
   User? current_user = FirebaseAuth.instance.currentUser;
   File? imageFile;
   ImagePicker imagePicker = ImagePicker();
@@ -49,14 +46,16 @@ class _AddProfileState extends State<AddProfile> {
     // TODO: implement initState
     imageController = TextEditingController();
     String? username = current_user!.displayName;
-    nameController.text = username!;
+    current_user!.displayName!=null?nameController!.text = username!:
+     nameController = TextEditingController();
+    ;
 
     super.initState();
   }
 
   @override
   void dispose() {
-    nameController.dispose();
+    nameController!.dispose();
     imageController?.dispose();
     super.dispose();
   }
@@ -117,7 +116,7 @@ class _AddProfileState extends State<AddProfile> {
                     ),
                     dropDownGenderField(),
                     SizedBox(
-                      height: 8,
+                      height: 13,
                     ),
                     imageSelection(),
                     SizedBox(
@@ -425,20 +424,23 @@ class _AddProfileState extends State<AddProfile> {
             var validation = _formKey.currentState!.validate();
             if (validation) {
               setState(() {
-               print(nameController.text);
+               print(nameController!.text);
                 Map<String, dynamic> data = {
-                  'name': nameController.text,
+                  'name': nameController!.text,
                   'gender': selectedGender,
-                  'caste': selectedCaste,
-                   'imageFile':imageFile?.path,
-                   'education':eduController.text,
+                   "profile":{
+                      "caste":selectedCaste,
+                      "education":eduController.text
+                   }
                 };
                 print(current_user?.providerData[0].uid);
                 FirebaseFirestore.instance
                     .collection('Users')
-                    .doc(current_user?.providerData[0].uid).set(data);
+                    .doc(get_uid(current_user)).set(data);
 
               });
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Home()));
             }
           },
           child: const Text(
@@ -453,7 +455,7 @@ class _AddProfileState extends State<AddProfile> {
       child: Container(
         alignment: Alignment.bottomCenter,
         width: MediaQuery.of(context).size.width,
-        height: 130,
+        height: 110,
         decoration:
             BoxDecoration(border: Border.all(color: Colors.lightBlueAccent)),
         child: Column(
@@ -476,7 +478,9 @@ class _AddProfileState extends State<AddProfile> {
                               onPressed: () {
                                 show_image(imageFile);
                               },
-                              child: Text("Show"),
+                              child: Container(
+                                  margin: EdgeInsets.only(bottom: 19,top: 6),
+                                  child: Text("Show")),
                             ),
                           ),
                         )
@@ -517,6 +521,26 @@ class _AddProfileState extends State<AddProfile> {
             ),
           );
         });
+  }
+
+  String? get_uid(User? current_user) {
+      if(current_user!.providerData[0].providerId=="google.com"){
+        print(current_user.uid);
+         print(current_user);
+          return current_user.providerData[0].providerId;
+      }
+      if(current_user.providerData[0].providerId == "password"){
+        print(current_user.uid);
+        print(current_user);
+
+        return current_user.uid;
+      }
+      if(current_user.providerData[0].providerId=="phone"){
+        print(current_user.uid);
+        print(current_user);
+
+        return current_user.uid;
+      }
   }
 
 

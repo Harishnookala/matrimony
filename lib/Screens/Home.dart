@@ -27,8 +27,10 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     providerId = current_user!.providerData[0].providerId;
-
+    print(providerId);
+    print(current_user);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         home: Scaffold(
             appBar: AppBar(
               title: Row(
@@ -43,7 +45,7 @@ class HomeState extends State<Home> {
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.3),color: Colors.indigoAccent.shade200),
                         child: TextButton(onPressed: (){
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AddProfile(current_user:current_user)));
+                              builder: (context) => AddProfile(current_user:current_user,uid:current_user!.uid)));
                           },
                             child: Row(
                           children: [
@@ -63,7 +65,8 @@ class HomeState extends State<Home> {
             drawer: Drawer(
               child: DrawerHeader(
                   child: Column(
-                children: [build_drawer(current_user,providerId)],
+                children: [
+                  build_drawer(current_user,providerId)],
               )),
             ),
             body: Center(
@@ -82,11 +85,11 @@ class HomeState extends State<Home> {
         children: [
           Center(
             child: ClipOval(
-              child: Image.network(
-                current_user!.photoURL!,
+              child: current_user!.photoURL!=null?Image.network(
+                current_user.photoURL!,
                 height: 70,
                 width: 70,
-              ),
+              ):Container(child: Icon(Icons.photo,size: 70,),),
             ),
           ),
           Column(
@@ -97,17 +100,18 @@ class HomeState extends State<Home> {
                   children: [
                     Container(
                       margin: EdgeInsets.only(right: 17.6),
-                      child: Text(
+                      child:current_user.displayName!=null? Text(
                         "Name  : - ",
                         style: TextStyle(color: Colors.deepOrange.shade400),
-                      ),
+                      ):Text("Phone Number : -",style: TextStyle(color: Colors.deepOrange.shade400)),
                     ),
                     Container(
-                      child: Text(
+                      child: current_user.displayName!=null?Text(
                         current_user.displayName!,
                         style: TextStyle(color: Colors.purpleAccent.shade200),
-                      ),
-                    )
+                      ):Text(current_user.phoneNumber!,
+                      style:TextStyle(color: Colors.purpleAccent.shade100,),
+                    )),
                   ],
                 ),
               ),
@@ -115,21 +119,21 @@ class HomeState extends State<Home> {
                 margin: EdgeInsets.only(top: 15.6),
                 child: Row(
                   children: [
-                    Container(
+                    current_user.email!=null?Container(
                       margin: EdgeInsets.only(right: 17.6),
                       child: Text(
                         "Email  : - ",
                         style: TextStyle(color: Colors.deepOrange.shade400),
                       ),
-                    ),
-                    Container(
+                    ):Container(),
+                   current_user.email!=null?Container(
                       child: Text(
                         current_user.email!,
                         style: TextStyle(
                           color: Colors.purpleAccent.shade200,
                         ),
                       ),
-                    )
+                    ):Container(),
                   ],
                 ),
               ),
@@ -148,13 +152,13 @@ class HomeState extends State<Home> {
       margin: const EdgeInsets.only(top: 15.6),
       child: TextButton(
           style: ButtonStyle(
-
               backgroundColor:
               MaterialStateProperty.all<Color>(Colors.green.shade500),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
-                  ))),          onPressed: () {
+                  ))),
+          onPressed: () {
             if (providerId == "google.com") {
               print("Success");
               Authentication().signOutFromGoogle();
