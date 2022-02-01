@@ -11,7 +11,6 @@ import 'package:matrimony/bloc/Login_bloc/login_bloc.dart';
 import 'package:matrimony/bloc/Login_bloc/login_event.dart';
 import '../Forgotpassword.dart';
 import '../Home.dart';
-import 'package:dart_style/dart_style.dart';
 
 import '../Signup.dart';
 
@@ -239,6 +238,7 @@ class SigninState extends State<Login> {
                 loginBloc.add(SignInButtonPressed(
                     email: email_controller.text,
                     password: password_controller.text));
+
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const Login()),

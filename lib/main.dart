@@ -62,6 +62,7 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
+/*
 class MainScreen extends StatelessWidget {
   AuthBloc? authBloc;
   @override
@@ -95,3 +96,4 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
+*/

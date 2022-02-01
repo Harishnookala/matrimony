@@ -23,16 +23,5 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         yield RegisterFailed(message: "email already in use");
       }
     }
- /*   if (event is Signupbutton) {
-      yield RegisterLoading();
-
-      var user = await Authentication().getEmail(event.email!);
-      print(user);
-      if (user == true) {
-        yield RegisterFail(message: user);
-      } else {
-        yield RegisterSuccess(checking: user);
-      }
-    }*/
   }
 }
